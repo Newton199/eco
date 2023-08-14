@@ -336,7 +336,7 @@ if (isset($_POST["Common"])) {
 
 			echo '<div class="cart-summary">
 				    <small class="qty">' . $n . ' Item(s) selected</small>
-				    <h5>$' . $total_price . '</h5>
+				    <h5 id="total"></h5>
 				</div>'
 ?>
 
@@ -380,6 +380,7 @@ if (isset($_POST["Common"])) {
 				$cart_item_id = $row["id"];
 				$qty = $row["qty"];
 				$stock = $row["Stock"];
+				$total=0;
 				echo
 				'  
 						<tr id="row-'.strval($n).'">
@@ -403,19 +404,20 @@ if (isset($_POST["Common"])) {
 								<input type="text" class="form-control qty stock" value="' . $stock . '" readonly>
 								<input type="hidden" class="form-control qty orginal_stock" value="' . $stock. '" >
 							</td>				
-							<td data-th="Price"><input type="text" class="form-control price" value="' . $product_price . '" readonly="readonly"></td>
+							<td data-th="Price"><input type="text" id = "price" class="form-control price" value="' . $product_price . '" readonly="readonly"></td>
 							<td data-th="Quantity">
-								<input type="text" class="form-control qty quantity" onkeyup="quantity_check('.strval($n).')" value="' . $qty . '" >
+								<input type="text" id="quantity" class="form-control qty quantity" value="' . $qty . '" onkeyup="quantity_check('.strval($n).')"  onInput="updateTotal("'.$total.'")"  name = "quantity_'.strval($n).'">
+
 								
 							</td>
-							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total" value="' .($product_price*$qty) . '" readonly="readonly"></td>
-
+							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total " id="subtotal" value="' . $total . '" readonly="readonly"></td>
 							<td class="actions" data-th="">
 							<div class="btn-group">
 								<a href="#" class="btn btn-info btn-sm update" update_id="' . $product_id . '"><i class="fa fa-refresh"></i></a>
 								
 								<a href="#" class="btn btn-danger btn-sm remove" remove_id="' . $product_id . '"><i class="fa fa-trash-o"></i></a>		
 							</div>							
+                            <div id="total"></div>
 							</td>
 						</tr>
                             
@@ -425,12 +427,35 @@ if (isset($_POST["Common"])) {
 
 
 				<script>
-					function quantity_check(rowId) {
-						var parenttd = document.querySelector("#row-" + rowId.toString())
-						var qty = parseInt(parenttd.querySelector('.quantity')?.value || "0");
-						var stock = parseInt(parenttd.querySelector('.stock')?.value || "0");
-						var orginal_stock = parseInt(parenttd.querySelector('.orginal_stock')?.value || "0")
 
+				function updateTotal(price) {
+					console.log("price");
+            var quantityInput = document.getElementById('quantity').value;
+            console.log(quantityInput);
+            var priceInput = parseInt(document.getElementById('price').value);
+            document.getElementById('subtotal').value = quantityInput*priceInput;
+            var totalOutput =quantityInput*priceInput;
+            console.log(priceInput, totalOutput);
+            // var Calprice = quantityInput * priceInput;
+            // console.log(Calprice);
+            var quantity = parseInt(quantityInput.value);
+            console.log(quantityInput, totalOutput);
+            if (!isNaN(quantity)) {
+                var total = price * quantity;
+                totalOutput.textContent = 'Total: $' + total;
+                console.log(total)
+            } else {
+                totalOutput.textContent = 'Total: Invalid quantity';
+            }
+        }
+					function quantity_check(rowId) {
+						var parenttd = document.querySelector("#row-" + rowId.toString());
+						var qty = parseInt(parenttd.querySelector('.quantity')?.value || "0");
+						console.log(qty);
+						var stock = parseInt(parenttd.querySelector('.stock')?.value || "0");
+						console.log(stock);
+						var orginal_stock = parseInt(parenttd.querySelector('.orginal_stock')?.value || "0")
+						console.log(orginal_stock);
 						if (qty == "") {
 							if (parenttd.querySelector('.stock') != undefined)
 								parenttd.querySelector('.stock').value = orginal_stock
@@ -446,7 +471,7 @@ if (isset($_POST["Common"])) {
 							}
 
 						}
-
+						updateTotal(5);
 					}
 				</script>
 <?php
