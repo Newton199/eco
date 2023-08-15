@@ -311,9 +311,9 @@ span.price {
 										
 									</a>
 								</div>
-								
+								 /Wishlist -->
 
-								
+								<!-- Cart -->
 								<?php 
 							
 								if(isset($_SESSION["uid"]))
