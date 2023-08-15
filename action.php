@@ -1,3 +1,6 @@
+
+
+
 <?php
 session_start();
 $ip_add = getenv("REMOTE_ADDR");
@@ -353,9 +356,7 @@ if (isset($_POST["Common"])) {
 		if (mysqli_num_rows($query) > 0) {
 			//display user cart item with "Ready to checkout" button if user is not login
 			echo '<div class="main ">
-			<div class="table-responsive">
-			<form method="post" action="login_form.php">
-			
+			<div class="table-responsive">			
 	               <table id="cart" class="table table-hover table-condensed" id="">
     				<thead>
 						<tr>
@@ -406,11 +407,11 @@ if (isset($_POST["Common"])) {
 							</td>				
 							<td data-th="Price"><input type="text" id = "price_'.strval($n).'" class="form-control price" value="' . $product_price . '" readonly="readonly"></td>
 							<td data-th="Quantity">
-								<input type="text" id="quantity_'.strval($n).'" class="form-control qty quantity" value="' . $qty . '" onkeyup="quantity_check('.strval($n).')"  "  name = "quantity_'.strval($n).'">
+								<input type="text" id="quantity_'.strval($n).'" class="form-control qty quantity" value="' . $qty . '" onkeyup="quantity_check('.strval($n).')"   name = "quantity_'.strval($n).'">
 
 								
 							</td>
-							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total " id="subtotal_'.strval($n).'" value="' . $total . '" readonly="readonly" onchange = "changeTotal('.strval($n).') "></td>
+							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total " id="subtotal_'.strval($n).'" value="' . $total . '" readonly="readonly" " ></td>
 							<td class="actions" data-th="">
 							<div class="btn-group">
 								<a href="#" class="btn btn-info btn-sm update" update_id="' . $product_id . '"><i class="fa fa-refresh"></i></a>
@@ -429,10 +430,9 @@ if (isset($_POST["Common"])) {
 				<script>
 
 				function updateTotal(price, ppid) {
-					console.log("price");
+		
 					
             var quantityInput = document.getElementById('quantity_'.concat(ppid)).value;
-            console.log(quantityInput);
             var priceInput = parseInt(document.getElementById('price_'.concat(ppid)).value);
             document.getElementById('subtotal_'.concat(ppid)).value = quantityInput*priceInput;
            /* var totalOutput =quantityInput*priceInput; 
@@ -457,7 +457,7 @@ if (isset($_POST["Common"])) {
 						var qty = parseInt(parenttd.querySelector('.quantity')?.value || "0");
 						var stock = parseInt(parenttd.querySelector('.stock')?.value || "0");
 						var orginal_stock = parseInt(parenttd.querySelector('.orginal_stock')?.value || "0")
-						console.log(orginal_stock);
+						
 						if (qty == "") {
 							if (parenttd.querySelector('.stock') != undefined)
 								parenttd.querySelector('.stock').value = orginal_stock
@@ -474,70 +474,40 @@ if (isset($_POST["Common"])) {
 
 						}
 						updateTotal(5, rowId);
-						//changetotal(rowId);
+						changedPrice();
 					}
+		function changedPrice()
+		{
+			var totalProductsinListtt = document.getElementById('totalCount').value;
+
+			var i=1;
+			var totalPrice=0;
+			while(i<=totalProductsinListtt)
+			{
+				totalPrice += parseInt(document.getElementById('subtotal_'.concat(i)).value);
+				i++;
+
+			}
+			console.log(totalPrice);
+			document.getElementById('ttotal').textContent ="Total :NPR "+ totalPrice;
+			/*document.getElementById('ttotal').innerHTML = "Total : $ " + totalPrice;*/
+		}
 				</script>
 <?php
 
 			}
 			echo '</tbody>
+			<input type="hidden" id= "totalCount" value="'.$n.'" >
 				<tfoot>
 					
 					<tr>
 						<td><a href="store.php" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
 						<td colspan="2" class="hidden-xs"></td>
-						<td class="hidden-xs text-center"><b id = "ttotal" class="net_total" ></b></td>
+						<td class="hidden-xs text-center"><b id="ttotal" class="net_total" ></b></td>
 						<div id="issessionset"></div>
                         <td>
-							';
-							?>
-<script type="text/javascript">
-	function changetotal(id){
-		var totalPrice = document.getElementById('ttotal').value;
-		var changedPrice = document.getElementById('subtotal_'.concat(id)).value
-	}
-</script>
-							<?php
-			if (!isset($_SESSION["uid"])) {
-				echo '
-					
-							<a href="" data-toggle="modal" data-target="#Modal_register" class="btn btn-success">Ready to Checkout</a></td>
-								</tr>
-							</tfoot>
-				
-							</table></div></div>';
-			} else if (isset($_SESSION["uid"])) {
-				//Paypal checkout form
-				echo '
-					</form>
-					
-						<form action="checkout.php" method="post">
-							<input type="hidden" name="cmd" value="_cart">
-							<input type="hidden" name="business" value="shoppingcart@puneeth.com">
-							<input type="hidden" name="upload" value="1">';
-
-				$x = 0;
-				$sql = "SELECT a.product_id,a.product_title,a.product_price,a.product_image,b.id,b.qty FROM products a,cart b WHERE a.product_id=b.p_id AND b.user_id='$_SESSION[uid]'";
-				$query = mysqli_query($con, $sql);
-				while ($row = mysqli_fetch_array($query)) {
-					$x++;
-					echo
-
-					'<input type="hidden" name="total_count" value="' . $x . '">
-									<input type="hidden" name="item_name_' . $x . '" value="' . $row["product_title"] . '">
-								  	 <input type="hidden" name="item_number_' . $x . '" value="' . $x . '">
-								     <input type="hidden" name="amount_' . $x . '" value="' . $row["product_price"] . '">
-								     <input type="hidden" name="quantity_' . $x . '" value="' . $row["qty"] . '">';
-				}
-
-				echo
-				'<input type="hidden" name="return" value="http://localhost/myfiles/public_html/payment_success.php"/>
-					                <input type="hidden" name="notify_url" value="http://localhost/myfiles/public_html/payment_success.php">
-									<input type="hidden" name="cancel_return" value="http://localhost/myfiles/public_html/cancel.php"/>
-									<input type="hidden" name="currency_code" value="USD"/>
-									<input type="hidden" name="custom" value="' . $_SESSION["uid"] . '"/>
-									<input type="submit" id="submit" name="login_user_with_product" name="submit" class="btn btn-success" value="Ready to Checkout">
-									</form></td>
+									<button id = "checkoutBtn" class="btn btn-success" value="Proceed to Checkout" onclick="hideunhide()">Proceed to Checkout</button>
+									</td>
 									
 									</tr>
 									
@@ -548,7 +518,6 @@ if (isset($_POST["Common"])) {
 			}
 		}
 	}
-}
 
 //Remove Item From cart
 if (isset($_POST["removeItemFromCart"])) {
@@ -585,8 +554,130 @@ if (isset($_POST["updateCartItem"])) {
 		exit();
 	}
 }
-
-
-
-
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section id="tohide" class="section" style="display: none;">       
+    <div class="container-fluid">
+        <div class="row-checkout">
+        <?php
+        if(isset($_SESSION["uid"])){
+            $sql = "SELECT * FROM user_info WHERE user_id='$_SESSION[uid]'";
+            $query = mysqli_query($con,$sql);
+            $row=mysqli_fetch_array($query);
+        
+        echo'
+            <div class="col-75">
+                <div class="container-checkout">
+                <form id="checkout_form" action="checkout_process.php" method="POST" class="was-validated">
+
+                    <div class="row-checkout">
+                    
+                    <div class="col-50">
+                        <h3>Billing Address</h3>
+                        <label for="fname"><i class="fa fa-user" ></i> Full Name</label>
+                        <input type="text" id="fname" class="form-control" name="firstname" pattern="^[a-zA-Z ]+$"  value="'.$row["first_name"].' '.$row["last_name"].'">
+                        <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                        <input type="text" id="email" name="email" class="form-control" pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z]{2,4})$" value="'.$row["email"].'" required>
+                        <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
+                        <input type="text" id="adr" name="address" class="form-control" value="'.$row["address1"].'" required>
+                        <label for="city"><i class="fa fa-institution"></i> City</label>
+                        <input type="text" id="city" name="city" class="form-control" value="'.$row["address2"].'" pattern="^[a-zA-Z ]+$" required>
+
+                        <div class="row">
+                        <div class="col-50">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" class="form-control" pattern="^[a-zA-Z ]+$" required>
+                        </div>
+                        <div class="col-50">
+                            <label for="zip">Zip</label>
+                            <input type="text" id="zip" name="zip" class="form-control" pattern="^[0-9]{6}(?:-[0-9]{4})?$" required>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <label><input type="CHECKBOX" name="q" class="roomselect" value="conform" required> Shipping address same as billing
+                    </label>';
+                  
+                    
+                    
+                echo'   
+                
+     
+                    
+                    <input type="button" id="submit" value="Cancel order" class="checkout-btn" onclick=\'window.location = "cancel_order.php"\'>
+
+                    <input type="submit" id="submit" value="Continue to checkout" class="checkout-btn" >
+
+                </form>
+                </div>
+            </div>
+            ';
+        }else{
+            echo"<script>window.location.href = 'cart.php'</script>";
+        }
+        ?>
+
+            
+        </div>
+    </div>
+</section>
+
+<script>
+	function hideunhide()
+	{
+		var x= document.getElementById('tohide');
+		var y= document.getElementById('checkoutBtn');
+		if(x.style.display == 'none')
+		{
+			x.style.display = 'block';
+			y.innerHTML = "Cancel Checkout";
+			var totalProductsinListtt = document.getElementById('totalCount').value;
+
+			var i=1;
+			while(i<=totalProductsinListtt)
+			{
+				document.getElementById('quantity_'.concat(i)).disabled = true;
+				i++;
+
+			}
+
+		}
+		else
+		{
+			x.style.display = 'none';
+			y.innerHTML = "Proceed to Checkout";
+			var totalProductsinListtt = document.getElementById('totalCount').value;
+
+			var i=1;
+			while(i<=totalProductsinListtt)
+			{
+				document.getElementById('quantity_'.concat(i)).disabled = false;
+				i++;
+
+			}	
+		}
+	}
+	</script>
+        

@@ -369,10 +369,10 @@ $(document).ready(function() {
             //net_total +=total; 
         })
 
-        $('.total').each(function() {
+         $('.total').each(function() {
             net_total += ($(this).val() - 0);
         })
-        $('.net_total').html("Total : $ " + net_total);
+        $('.net_total').html("Total : NPR " + net_total);
     }
     //remove product from cart
 
