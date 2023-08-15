@@ -406,11 +406,11 @@ if (isset($_POST["Common"])) {
 							</td>				
 							<td data-th="Price"><input type="text" id = "price_'.strval($n).'" class="form-control price" value="' . $product_price . '" readonly="readonly"></td>
 							<td data-th="Quantity">
-								<input type="text" id="quantity_'.strval($n).'" class="form-control qty quantity" value="' . $qty . '" onkeyup="quantity_check('.strval($n).')" onInput="updateTotal("'.$total.', '.strval($n).'") "  name = "quantity_'.strval($n).'">
+								<input type="text" id="quantity_'.strval($n).'" class="form-control qty quantity" value="' . $qty . '" onkeyup="quantity_check('.strval($n).')"  "  name = "quantity_'.strval($n).'">
 
 								
 							</td>
-							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total " id="subtotal_'.strval($n).'" value="' . $total . '" readonly="readonly"></td>
+							<td data-th="Subtotal" class="text-center"><input type="text" class="form-control total " id="subtotal_'.strval($n).'" value="' . $total . '" readonly="readonly" onchange = "changeTotal('.strval($n).') "></td>
 							<td class="actions" data-th="">
 							<div class="btn-group">
 								<a href="#" class="btn btn-info btn-sm update" update_id="' . $product_id . '"><i class="fa fa-refresh"></i></a>
@@ -474,6 +474,7 @@ if (isset($_POST["Common"])) {
 
 						}
 						updateTotal(5, rowId);
+						//changetotal(rowId);
 					}
 				</script>
 <?php
@@ -488,8 +489,15 @@ if (isset($_POST["Common"])) {
 						<td class="hidden-xs text-center"><b id = "ttotal" class="net_total" ></b></td>
 						<div id="issessionset"></div>
                         <td>
-							
 							';
+							?>
+<script type="text/javascript">
+	function changetotal(id){
+		var totalPrice = document.getElementById('ttotal').value;
+		var changedPrice = document.getElementById('subtotal_'.concat(id)).value
+	}
+</script>
+							<?php
 			if (!isset($_SESSION["uid"])) {
 				echo '
 					

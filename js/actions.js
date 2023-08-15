@@ -366,13 +366,14 @@ $(document).ready(function() {
             var price = row.find('.price').val();
             var total = price * $(this).val() - 0;
             row.find('.total').val(total);
+            //net_total +=total; 
         })
+
         $('.total').each(function() {
             net_total += ($(this).val() - 0);
         })
         $('.net_total').html("Total : $ " + net_total);
     }
-
     //remove product from cart
 
     page();
