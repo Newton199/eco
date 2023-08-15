@@ -3,6 +3,7 @@
 
 <?php
 session_start();
+$totalProductDetails[] = array();
 $ip_add = getenv("REMOTE_ADDR");
 include "db.php";
 if (isset($_POST["category"])) {
@@ -373,6 +374,7 @@ if (isset($_POST["Common"])) {
 			$n = 0;
 			$totalProductPrice = 0;
 			while ($row = mysqli_fetch_array($query)) {
+				$totalProductDetails[] = $row; 
 				$n++;
 				$product_id = $row["product_id"];
 				$product_title = $row["product_title"];
@@ -383,7 +385,9 @@ if (isset($_POST["Common"])) {
 				$qty = $row["qty"];
 				$stock = $row["Stock"];
 				$total=0;
-				$totalProductPrice += $product_price*$qty;
+				$totalProductPrice = ((int)$product_price)* $qty;
+
+
 				echo
 				'  
 						<tr id="row-'.strval($n).'">
@@ -425,6 +429,7 @@ if (isset($_POST["Common"])) {
 						</tr>
                             
                             ';
+
 			?>
 			<div> 
 
@@ -437,19 +442,7 @@ if (isset($_POST["Common"])) {
             var quantityInput = document.getElementById('quantity_'.concat(ppid)).value;
             var priceInput = parseInt(document.getElementById('price_'.concat(ppid)).value);
             document.getElementById('subtotal_'.concat(ppid)).value = quantityInput*priceInput;
-           /* var totalOutput =quantityInput*priceInput; 
-            var quantity = parseInt(quantityInput.value); 
-            console.log(quantityInput, totalOutput); 
-            if (!isNaN(quantity)) 
-            { 
-            	var total = price * quantity; 
-            	totalOutput.textContent = 'Total: $' + total; 
-            	console.log(total) 
-            } 
-            else 
-            { 
-            	totalOutput.textContent = 'Total: Invalid quantity'; 
-            }*/
+        
 
   
         }
@@ -472,6 +465,7 @@ if (isset($_POST["Common"])) {
 							if (parenttd.querySelector('.stock') != undefined){
 								parenttd.querySelector('.stock').value = dec_stock;
 								document.querySelector(`[name='quantity_${rowId}']`).value = qty;
+
 							}
 
 						}
@@ -492,7 +486,7 @@ if (isset($_POST["Common"])) {
 			}
 			console.log(totalPrice);
 			document.getElementById('ttotal').textContent ="Total :NPR "+ totalPrice;
-			/*document.getElementById('ttotal').innerHTML = "Total : $ " + totalPrice;*/
+			document.getElementById('Totalll').value = totalPrice;
 		}
 				</script>
 <?php
@@ -619,5 +613,22 @@ if (isset($_POST["updateCartItem"])) {
 			}	
 		}
 	}
+
+	const calculateButton = document.getElementById("checkoutBtn");
+    calculateButton.addEventListener("click", calculateTotalQty);
+
+function calculateTotalQty() {
+      const qtyInputs = document.querySelectorAll(".quantity");
+      let totalQty = 0;
+      
+      qtyInputs.forEach(input => {
+      	console.log(input.value);
+        totalQty += parseInt(input.value) || 0;
+      });
+      
+      const totalQuantityElement = document.getElementById("totalProductQty");
+      totalQuantityElement.value = totalQty;
+      console.log(totalQuantityElement);
+    }
 	</script>
         

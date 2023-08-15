@@ -41,14 +41,40 @@
                     
                     <label><input type="CHECKBOX" name="q" class="roomselect" value="conform" required> Shipping address same as billing
                     </label>';
+
+
+                     $i=1;
+                    $total=0;
+                    foreach ($totalProductDetails as $result) {
+                        if (isset($result['product_title']) && isset($result['product_price']) && isset($result['qty'])) {
+                            $item_name_ = $result['product_title'];
+                            $quantity_ = $result['qty'];
+                            $amount_ = $result['product_price']*$quantity_;
+                            $sql = "SELECT product_id FROM products WHERE product_title='$item_name_'";
+                        $query = mysqli_query($con,$sql);
+                        $row=mysqli_fetch_array($query);
+                        $product_id=$row["product_id"];
+                        echo "  
+                        <input type='hidden' name='prod_id_$i' value='$product_id'>
+                        <input type='hidden' name='prod_price_$i' value='$amount_'>
+                        <input type='hidden' name='prod_qty_$i' value='$quantity_'>
+                        ";
+                        
+                        }
+                        $i++;
+                    }
                   
                     
                         
-                                         
+
                 echo' 
-                <input type="hidden" name="total_count" value="'.$n.'">
-                <input type="hidden" name="total_price" value="'.$totalProductPrice.'d">
-                    
+                <input type="hidden" name="total_count" value="'.$i.'">
+                <input type="hidden" name="total_product_count" value="0" id="totalProductQty">
+                <input id="Totalll" type="hidden" name="total_price" value="'.$totalProductPrice.'">';   
+
+                
+
+                    echo'    
                     <input type="button" id="submit" value="Cancel order" class="checkout-btn" onclick=\'window.location = "cancel_order.php"\'>
 
                     <input type="submit" id="submit" value="Continue to checkout" class="checkout-btn" >
