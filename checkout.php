@@ -1,108 +1,3 @@
-<?php
-include "db.php";
-
-include "header.php";
-  
-
-                         
-?>
-
-<style>
-
-.row-checkout {
-  display: -ms-flexbox; /* IE10 */
-  dissspslay: flex;
-  -ms-flex-wrap: wrap; /* IE10 */
-  fledx-wrap: wrap;
-  margin: 0 -16px;
-}
-
-.col-25 {
-  -ms-flex: 25%; /* IE10 */
-  flex: 25%;
-}
-
-.col-50 {
-  -ms-flex: 50%; /* IE10 */
-  flex: 50%;
-}
-
-.col-75 {
-  -ms-flex: 75%; /* IE10 */
-  flex: 75%;
-}
-
-.col-25,
-.col-50,
-.col-75 {
-  padding: 0 16px;
-}
-
-.container-checkout {
-  background-color: #f2f2f2;
-  padding: 5px 20px 15px 20px;
-  border: 1px solid lightgrey;
-  border-radius: 3px;
-}
-
-input[type=text] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-label {
-  margin-bottom: 10px;
-  display: block;
-}
-
-.icon-container {
-  margin-bottom: 20px;
-  padding: 7px 0;
-  font-size: 24px;
-}
-
-.checkout-btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  width: 100%;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 17px;
-}
-
-.checkout-btn:hover {
-  background-color: #45a049;
-}
-
-
-
-hr {
-  border: 1px solid lightgrey;
-}
-
-span.price {
-  float: right;
-  color: grey;
-}
-
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
-@media (max-width: 800px) {
-  .row-checkout {
-    flex-direction: column-reverse;
-  }
-  .col-25 {
-    margin-bottom: 20px;
-  }
-}
-</style>
-
-                    
 <section class="section">       
     <div class="container-fluid">
         <div class="row-checkout">
@@ -147,29 +42,12 @@ span.price {
                     <label><input type="CHECKBOX" name="q" class="roomselect" value="conform" required> Shipping address same as billing
                     </label>';
                   
-                    $i=1;
-                    $total=0;
-                    $total_count=$_POST['total_count'];
-                    while($i<=$total_count){
-                        $item_name_ = $_POST['item_name_'.$i];
-                        $amount_ = $_POST['amount_'.$i];
-                        $quantity_ = $_POST['quantity_'.$i];
-                        $total=$total+$amount_ ;
-                        $sql = "SELECT product_id FROM products WHERE product_title='$item_name_'";
-                        $query = mysqli_query($con,$sql);
-                        $row=mysqli_fetch_array($query);
-                        $product_id=$row["product_id"];
-                        echo "  
-                        <input type='hidden' name='prod_id_$i' value='$product_id'>
-                        <input type='hidden' name='prod_price_$i' value='$amount_'>
-                        <input type='hidden' name='prod_qty_$i' value='$quantity_'>
-                        ";
-                        $i++;
-                    }
                     
-                echo'   
-                <input type="hidden" name="total_count" value="'.$total_count.'">
-                    <input type="hidden" name="total_price" value="'.$total.'">
+                        
+                                         
+                echo' 
+                <input type="hidden" name="total_count" value="'.$n.'">
+                <input type="hidden" name="total_price" value="'.$totalProductPrice.'d">
                     
                     <input type="button" id="submit" value="Cancel order" class="checkout-btn" onclick=\'window.location = "cancel_order.php"\'>
 
@@ -214,6 +92,7 @@ span.price {
                     ";
                     $total=0;
                     while($i<=$total_count){
+
                         $item_name_ = $_POST['item_name_'.$i];
                         
                         $item_number_ = $_POST['item_number_'.$i];
@@ -237,6 +116,9 @@ span.price {
                         <tr><td><p>$item_number_</p></td><td><p>$item_name_</p></td><td ><p>$quantity_</p></td><td ><p>$outOfStockOrAmount</p></td></tr>";
                         
                         $i++;
+                        echo"
+
+                        ";
                     }
 
                 echo"
@@ -254,8 +136,3 @@ span.price {
         </div>
     </div>
 </section>
-        
-        
-<?php
-include "footer.php";
-?>
